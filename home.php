@@ -1,6 +1,6 @@
 <?php 
 if(isset($_POST['Submit'])){
-
+//kati
 	if ($_FILES['csv']['size'] > 0) { 
 
 	    //get the csv file 
