@@ -1,76 +1,65 @@
-<script>
-abstract class API
+<?php
+// This is the API to possibility show the user list, and show a specific user by action.
+
+function get_user_by_id($id)
 {
-    /**
-     * Property: method
-     * The HTTP method this request was made in, either GET, POST, PUT or DELETE
-     */
-    protected $method = '';
-    /**
-     * Property: endpoint
-     * The Model requested in the URI. eg: /files
-     */
-    protected $endpoint = '';
-    /**
-     * Property: verb
-     * An optional additional descriptor about the endpoint, used for things that can
-     * not be handled by the basic methods. eg: /files/process
-     */
-    protected $verb = '';
-    /**
-     * Property: args
-     * Any additional URI components after the endpoint and verb have been removed, in our
-     * case, an integer ID for the resource. eg: /<endpoint>/<verb>/<arg0>/<arg1>
-     * or /<endpoint>/<arg0>
-     */
-    protected $args = Array();
-    /**
-     * Property: file
-     * Stores the input of the PUT request
-     */
-     protected $file = Null;
+  // Create connection
+  $con=mysqli_connect("127.0.0.1","root","","web_api");
 
-    /**
-     * Constructor: __construct
-     * Allow for CORS, assemble and pre-process the data
-     */
-    public function __construct($request) {
-        header("Access-Control-Allow-Orgin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Content-Type: application/json");
+  // Check connection
+  if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  }
+  $result = mysqli_query($con,"SELECT name,surname,status FROM diafora WHERE id = ".$id);
+  $row = mysqli_fetch_array($result);
+  
+  $user_info = array("first_name" => $row['name'], "last_name" => $row['surname'], "status" => $row['status']);
 
-        $this->args = explode('/', rtrim($request, '/'));
-        $this->endpoint = array_shift($this->args);
-        if (array_key_exists(0, $this->args) && !is_numeric($this->args[0])) {
-            $this->verb = array_shift($this->args);
-        }
+  mysqli_close($con);
+  return $user_info;
+}
 
-        $this->method = $_SERVER['REQUEST_METHOD'];
-        if ($this->method == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER)) {
-            if ($_SERVER['HTTP_X_HTTP_METHOD'] == 'DELETE') {
-                $this->method = 'DELETE';
-            } else if ($_SERVER['HTTP_X_HTTP_METHOD'] == 'PUT') {
-                $this->method = 'PUT';
-            } else {
-                throw new Exception("Unexpected Header");
-            }
-        }
+function get_user_list()
+{
+  // Create connection
+  $con=mysqli_connect("127.0.0.1","root","","web_api");
 
-        switch($this->method) {
-        case 'DELETE':
-        case 'POST':
-            $this->request = $this->_cleanInputs($_POST);
-            break;
-        case 'GET':
-            $this->request = $this->_cleanInputs($_GET);
-            break;
-        case 'PUT':
-            $this->request = $this->_cleanInputs($_GET);
-            $this->file = file_get_contents("php://input");
-            break;
-        default:
-            $this->_response('Invalid Method', 405);
-            break;
-        }
+  // Check connection
+  if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  }
+  $result = mysqli_query($con,"SELECT name,id FROM diafora ORDER BY name ASC");
+  $user_list = array();
+  while($row = mysqli_fetch_array($result)) {
+    $temp = array("id" => $row['id'], "name" => $row['name']);
+    array_push($user_list, $temp);
+
+  }
+  mysqli_close($con);
+
+  return $user_list;
+}
+
+$possible_url = array("get_user_list", "get_user");
+
+$value = "An error has occurred";
+
+if (isset($_GET["action"]) && in_array($_GET["action"], $possible_url))
+{
+  switch ($_GET["action"])
+    {
+      case "get_user_list":
+        $value = get_user_list();
+        break;
+      case "get_user":
+        if (isset($_GET["id"]))
+          $value = get_user_by_id($_GET["id"]);
+        else
+          $value = "Missing argument";
+        break;
     }
-</script>
+}
+
+exit(json_encode($value));
+
+?>
