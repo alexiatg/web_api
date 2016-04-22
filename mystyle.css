@@ -1,0 +1,145 @@
+body {
+    height: 650px;
+    background: -webkit-linear-gradient(rgba(0,0,0,0), rgba(41,148,255,1)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(rgba(0,0,0,0), rgba(41,148,255,1)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(rgba(0,0,0,0), rgba(41,148,255,1)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(rgba(0,0,0,0), rgba(41,148,255,1)); /* Standard syntax (must be last) */
+    text-align: center;
+}
+p {
+    margin: auto;
+}
+
+div {
+    margin: auto;
+}
+.googleMap{
+    border-style: solid;
+    border-width: 5px;
+    width: 500px;
+    height: 380px;
+}
+.buttons{
+    border-style: solid;
+    border-width: 2px;
+    border-color: #66C2E0;
+    text-align: right;
+}
+.forms{
+    width: 400px;
+    position: absolute;
+    top: 100px;
+    right: 35%;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 35px;
+    text-align: left;
+}
+
+button{
+    outline-width: 10px;
+}
+
+table{
+    margin-left: 20%;
+    margin-right: 20%;
+}
+.info{
+    margin: auto;
+}
+td:hover{
+        background-color: #00FFFF;
+    }
+a.rss{
+    position: absolute; 
+    right: 100px;
+}
+/* unvisited link */
+a:link {
+    color: #FF0000;
+}
+
+/* visited link */
+a:visited {
+    color: #00FF00;
+}
+
+/* mouse over link */
+a:hover {
+    color: #FF00FF;
+}
+
+/* selected link */
+a:active {
+    color: #0000FF;
+}
+
+input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 400px){
+    body{
+        height: 550px;
+        background: -webkit-linear-gradient(rgba(0,0,0,0), rgba(41,148,255,1)); /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(rgba(0,0,0,0), rgba(41,148,255,1)); /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(rgba(0,0,0,0), rgba(41,148,255,1)); /* For Firefox 3.6 to 15 */
+        background: linear-gradient(rgba(0,0,0,0), rgba(41,148,255,1)); /* Standard syntax (must be last) */
+        text-align: center;
+        font-size: large;
+    }
+    div {
+        
+    }
+    .googleMap{
+        border-style: solid;
+        border-width: 5px;
+        width: 280px;
+        height: 250px;
+    }
+    .allagh{    
+        position: fixed;
+        top: 320px;
+        margin-left: 5%;
+        padding: 10px 5%;
+        border-style: solid;
+        border-width: 3px;
+    }
+    table{
+        margin: auto;
+        table-layout:fixed;
+        overflow:hidden;
+        white-space: nowrap;
+    }
+    th {
+        height: 20px;
+    }
+    
+    span.description {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 100px;
+    }
+}
