@@ -33,7 +33,7 @@ if(isset($_POST['Submit'])){
 	    while ($data = fgetcsv($handle,1000,",","'")){ 
 	 	
 	        if ($data[0]) { 
-	            mysqli_query($con, "INSERT INTO data (id,rypos,city,year,date,h1,h2,h3,h4,h5,h6,h7,h8,h9,h10,h11,h12,h13,h14,h15,h16,h17,h18,h19,h20,h21,h22,h23,h24) VALUES 
+	            mysqli_query($con, "INSERT INTO data (id,rypos,kwdikos,year,date,h1,h2,h3,h4,h5,h6,h7,h8,h9,h10,h11,h12,h13,h14,h15,h16,h17,h18,h19,h20,h21,h22,h23,h24) VALUES 
 	                ( 
 	                    0,
 	                    '".$rypos."',
@@ -74,7 +74,6 @@ if(isset($_POST['Submit'])){
 
 ?> 
 
-<body> 
 <div class=forms>
 <form action="" method="post" enctype="multipart/form-data" name="form1" id="form1"> 
   <br> Typos rypou:<br>

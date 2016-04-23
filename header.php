@@ -2,6 +2,6 @@
 
 <link rel="stylesheet" type="text/css" href="mystyle.css">  
   
-<meta charset="Windows-1253">  
+<meta charset="UTF-8">  
 </head>
 <body>
