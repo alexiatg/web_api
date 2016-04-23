@@ -1,28 +1,15 @@
 <?php 
 include("header.php");
 if(isset($_POST['Submit'])){
-//kati
+	$rypos = $_POST['rypos'];
+	$year = $_POST['etos'];
+	$city = $_POST['city'];
 	if ($_FILES['csv']['size'] > 0) { 
 
 	    //get the csv file 
 	    $file = "files/".basename($_FILES['csv']['name']);
-	    $name = basename($_FILES['csv']['name']);
 	    $handle = fopen($file,"r");
 
-	    $split = str_split($name, 3);
-	    if(strlen($name) == 14){
-	    	$rypos = $split[0];
-	    	$city = $split[1];
-	    	$temp = str_split($split[3], 1);
-	    	$year = $split[2].$temp[0];
-	    }else{
-	    	$rypos = $split[0];
-	    	$temp = $split[1].$split[2].$split[3];
-	    	$split = str_split($temp, 4);
-	    	$city = $split[0];
-	    	$year = $split[1];
-
-	    }
 	    //loop through the csv file and insert into database 
 	    //connect to the database 
 		  $con=mysqli_connect("127.0.0.1","root","","web_api");
@@ -83,6 +70,7 @@ if(isset($_POST['Submit'])){
   <br> Epilogh Arxeiou:<br>
   <input name="csv" type="file" id="csv" /> 
   <br> 
+  <input type="hidden" name="city" value="<?php echo $_GET['id']; ?>">
   <input type="submit" name="Submit" value="Submit" /> 
 </form> 
 </div>
