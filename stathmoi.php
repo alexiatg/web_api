@@ -16,7 +16,7 @@ echo "<div>";
 echo "<br><br><br><br><br>";
 echo "<table class='info'>";
 echo "<tr><td>";
-echo "Όνομα σταθμο";
+echo "Όνομα σταθμού";
 echo "</td><td>";
 echo "Κωδικός σταθμού";
 echo "</td><td>";
