@@ -1,12 +1,17 @@
 <?php 
 include("header.php");
-if(isset($_POST['Submit'])){
-//kati
-	if ($_FILES['csv']['size'] > 0) { 
 
-	    //get the csv file 
+// Θέλουμε να μπούμε σε αυτή την if() μόνο αν ο χρήστης έχει κάνει
+// submit τη φόρμα 
+if(isset($_POST['Submit'])){
+	// Η $_FILES[][] κρατάει όλα τα αρχεία που προσπαθούμε να περάσουμε στον
+	// server μας και κάποια στοιχεία γι' αυτά όπως το size
+	if ($_FILES['csv']['size'] > 0) { 
+		// Βρίσκουμε το αρχείο που θέλουμε να χρησιμοποιήσουμε
 	    $file = "files/".basename($_FILES['csv']['name']);
 	    $name = basename($_FILES['csv']['name']);
+	    // Ανοίγουμε το αρχείο με τη fopen() για να μπορέσουμε να διαβάσουμε τα 
+	    // δεδομένα του. Το flag "r" σημαίνει read
 	    $handle = fopen($file,"r");
 
 	    $split = str_split($name, 3);
@@ -23,16 +28,19 @@ if(isset($_POST['Submit'])){
 	    	$year = $split[1];
 
 	    }
-	    //loop through the csv file and insert into database 
-	    //connect to the database 
-		  $con=mysqli_connect("127.0.0.1","root","","web_api");
-		  // Check connection
-		  if (mysqli_connect_errno()) {
-		    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-		  }
+
+	    // Στο σημείο αυτό διαπερνάμε τα στοιχεία του .csv αρχείου μας
+	    // και περνάμε στη βάση τα δεδομένα μας
+		$con=mysqli_connect("127.0.0.1","root","","web_api");
+
+		if (mysqli_connect_errno()) {
+			echo "Failed to connect to MySQL: " . mysqli_connect_error();
+		}
+
+		// Χρησιμοποιούμε την fgetcsv() για να πάρουμε όλα τα δεδομένα που χρειαζόμαστε 
+		// απο το αρχείο
 	    while ($data = fgetcsv($handle,1000,",","'")){ 
-	 	
-	        if ($data[0]) { 
+	 		if ($data[0]) { 
 	            mysqli_query($con, "INSERT INTO data (id,rypos,kwdikos,year,date,h1,h2,h3,h4,h5,h6,h7,h8,h9,h10,h11,h12,h13,h14,h15,h16,h17,h18,h19,h20,h21,h22,h23,h24) VALUES 
 	                ( 
 	                    0,
@@ -71,9 +79,10 @@ if(isset($_POST['Submit'])){
 
 	} 
 }
-
 ?> 
 
+<!-- Αν δεν έχει γίνει submit της φόρμας, δηλαδή αν ο χρήστης επισκέπτεται για πρώτη
+	 φορά τη σελίδα τότε θέλουμε να του εμφανίζει τη φόρμα για να διαλέξει αρχείο csv -->
 <div class=forms>
 <form action="" method="post" enctype="multipart/form-data" name="form1" id="form1"> 
   <br> Typos rypou:<br>
@@ -88,5 +97,3 @@ if(isset($_POST['Submit'])){
 </div>
 
 <?php include("footer.php"); ?>
-
-
