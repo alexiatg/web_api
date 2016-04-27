@@ -54,16 +54,15 @@ function abs_rypos($rypos, $kwdikos, $hmeromhnia, $wra){
   if ($kwdikos) {
   	// Χρησιμοποιούμε τη LIKE για να μπορέσουμε να πάρουμε απο τη Βάση δεδομένα όπου
   	// η ημερομηνία θα είναι της μορφής που θα δώσει ο χρήστης
-    $result = mysqli_query($con,"SELECT h".$wra." FROM data WHERE rypos='".$rypos."' AND kwdikos='".$kwdikos."' AND (date LIKE '".$hmeromhnia."' OR date LIKE '%".$hmeromhnia."%')");
+    $result = mysqli_query($con,"SELECT h".$wra." FROM data WHERE rypos='".$rypos."' AND kwdikos='".$kwdikos."' AND (date LIKE '".$hmeromhnia."' OR date LIKE '%".$hmeromhnia."%') GROUP BY rypos");
   } else {
-    $result = mysqli_query($con,"SELECT h".$wra." FROM data WHERE rypos='".$rypos."' AND (date LIKE '".$hmeromhnia."' OR date LIKE '%".$hmeromhnia."%')");
+    $result = mysqli_query($con,"SELECT h".$wra." FROM data WHERE rypos='".$rypos."' AND (date LIKE '".$hmeromhnia."' OR date LIKE '%".$hmeromhnia."%') GROUP BY rypos");
   }
 
-  $apolyth= array();
-  while ($row = mysqli_fetch_array($result)) {
-    $temp= array("absolute" => $row['h'.$wra]);
-    array_push($apolyth, $temp);
-  }
+  $row = mysqli_fetch_array($result);
+  $apotelesmata = array();
+  $apolyth = array("absolute" => $row['h'.$wra]);
+  array_push($apotelesmata, $apolyth);
 
   // Ανάλογα με την κατηγορία που επιλέχθηκε παραπάνω, δηλαδή αν δώθηκε κωδικός σταθμού ή όχι, παίρνουμε
   // και τις αντίστοιχες συντεταγμένες
@@ -73,16 +72,16 @@ function abs_rypos($rypos, $kwdikos, $hmeromhnia, $wra){
     $result = mysqli_query($con,"SELECT longtitude,latitude FROM stathmoi INNER JOIN data ON stathmoi.id=data.kwdikos AND (date LIKE '".$hmeromhnia."' OR date LIKE '%".$hmeromhnia."%') AND rypos='".$rypos."' GROUP BY data.kwdikos");
   }
 
-  $syntetagmenes= array();
   while ($row = mysqli_fetch_array($result)){
-    $temp= array("longtitude" => $row['longtitude'], "latitude" => $row['latitude']);
-    array_push($syntetagmenes, $temp);
+    $temp= array("longtitude" => $row['longtitude']);
+    array_push($apotelesmata, $temp);
+    $temp= array("latitude" => $row['latitude']);
+    array_push($apotelesmata, $temp);
   }
 
   // Δημιουργούμε το array που θα επιστρέψει την τελική μας απάντηση, δηλαδή την
   // απόλυτη τιμή ρύπανσης και τις συντεταγμένες
-  $apotelesmata = array();
-  array_push($apotelesmata, $apolyth, $syntetagmenes);
+ 
 
   // Επιστρέφουμε την απάντηση
   return $apotelesmata;
@@ -120,6 +119,8 @@ function average ($rypos, $kwdikos, $hmeromhnia){
   }
 
   $mesh_timh = $mesh_meras/$counter;
+  $temp= array("average" => $mesh_timh);
+  array_push($apotelesmata, $temp);
 
   $counter = 0;
   if ($kwdikos) {
@@ -136,6 +137,8 @@ function average ($rypos, $kwdikos, $hmeromhnia){
   }
 
   $apoklish = sqrt($apok/$counter);
+  $temp= array("apoklish" => $apoklish);
+  array_push($apotelesmata, $temp);
 
   if ($kwdikos) {
     $result = mysqli_query($con,"SELECT longtitude,latitude FROM stathmoi WHERE id=".$kwdikos);
@@ -143,13 +146,12 @@ function average ($rypos, $kwdikos, $hmeromhnia){
     $result = mysqli_query($con,"SELECT longtitude,latitude FROM stathmoi INNER JOIN data ON stathmoi.id=data.kwdikos AND (date LIKE '".$hmeromhnia."' OR date LIKE '%".$hmeromhnia."%') AND rypos='".$rypos."' GROUP BY data.kwdikos");
   }
 
-  $syntetagmenes = array();
   while ($row = mysqli_fetch_array($result)) {
-    $temp = array("longtitude" => $row['longtitude'], "latitude" => $row['latitude']);
-    array_push($syntetagmenes, $temp);
+    $temp= array("longtitude" => $row['longtitude']);
+    array_push($apotelesmata, $temp);
+    $temp= array("latitude" => $row['latitude']);
+    array_push($apotelesmata, $temp);
   }
-
-  array_push($apotelesmata, $mesh_timh, $apoklish, $syntetagmenes);
 
   mysqli_close($con);
 

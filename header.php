@@ -6,6 +6,6 @@
 </head>
 <body>
 <ul>
-  <li><a href="home.php">Home</a></li>
+  <li><a href="demo.php">Demo</a></li>
   <li><a href="stathmoi.php">Σταθμοί καταγραφής</a></li>
 </ul>

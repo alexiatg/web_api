@@ -10,6 +10,7 @@ if (mysqli_connect_errno()) {
 // διαγραφής του σταθμού φτιάχνοντας το κατάλληλο query
 if (isset($_GET['id'])) {
     mysqli_query($con,"DELETE FROM stathmoi WHERE id = ".$_GET['id']);
+    header("Location: stathmoi.php");
 }
 
 $result = mysqli_query($con,"SELECT * FROM stathmoi ORDER BY onoma ASC");

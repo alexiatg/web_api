@@ -1,22 +1,31 @@
 <?php 
 include("header.php");
+
+// Θέλουμε να μπούμε σε αυτή την if() μόνο αν ο χρήστης έχει κάνει
+// submit τη φόρμα 
 if(isset($_POST['Submit'])){
 	$rypos = $_POST['rypos'];
 	$year = $_POST['etos'];
 	$city = $_POST['city'];
+	// Η $_FILES[][] κρατάει όλα τα αρχεία που προσπαθούμε να περάσουμε στον
+	// server μας και κάποια στοιχεία γι' αυτά όπως το size
 	if ($_FILES['csv']['size'] > 0) { 
 
-	    //get the csv file 
+		// Βρίσκουμε το αρχείο που θέλουμε να χρησιμοποιήσουμε
 	    $file = "files/".basename($_FILES['csv']['name']);
+	    // Ανοίγουμε το αρχείο με τη fopen() για να μπορέσουμε να διαβάσουμε τα 
+	    // δεδομένα του. Το flag "r" σημαίνει read
 	    $handle = fopen($file,"r");
 
-	    //loop through the csv file and insert into database 
-	    //connect to the database 
-		  $con=mysqli_connect("127.0.0.1","root","","web_api");
-		  // Check connection
-		  if (mysqli_connect_errno()) {
-		    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-		  }
+	    // Στο σημείο αυτό διαπερνάμε τα στοιχεία του .csv αρχείου μας
+	    // και περνάμε στη βάση τα δεδομένα μας
+		$con=mysqli_connect("127.0.0.1","root","","web_api");
+
+		if (mysqli_connect_errno()) {
+			echo "Failed to connect to MySQL: " . mysqli_connect_error();
+		}
+		// Χρησιμοποιούμε την fgetcsv() για να πάρουμε όλα τα δεδομένα που χρειαζόμαστε 
+		// απο το αρχείο
 	    while ($data = fgetcsv($handle,1000,",","'")){ 
 	 	
 	        if ($data[0]) { 
@@ -61,6 +70,8 @@ if(isset($_POST['Submit'])){
 
 ?> 
 
+<!-- Αν δεν έχει γίνει submit της φόρμας, δηλαδή αν ο χρήστης επισκέπτεται για πρώτη
+	 φορά τη σελίδα τότε θέλουμε να του εμφανίζει τη φόρμα για να διαλέξει αρχείο csv -->
 <div class=forms>
 <form action="" method="post" enctype="multipart/form-data" name="form1" id="form1"> 
   <br> Typos rypou:<br>
