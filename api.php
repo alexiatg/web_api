@@ -165,31 +165,59 @@ $value = "An error has occurred";
 
 // Ελέγχουμε αν έχει οριστεί η μεταβλητή action, δηλαδή αν έχει δοθεί κάποια
 // λειτουργία και αν αυτή η λειτουργία είναι επιτρεπτή
-if (isset($_GET["action"]) && in_array($_GET["action"], $possible_url))
+if (isset($_GET["action"]) && in_array($_GET["action"], $possible_url) && isset($_GET['key']))
 {
-  // Ανάλογα με το action που λάβαμε μετακινούμαστε και στο κατάλληλο case
-  switch ($_GET["action"])
-  {
-    case "stations":
-      // Εκτέλεσε τη συνάρτηση stations()
-      $value = stations();
-      break;
-    case "average":
-      // Ελέγχουμε αν έχουν δοθεί τα κατάλληλα ορίσματα αλλιώς επιστρέφουμε μήνυμα λάθους
-      if (isset($_GET["rypos"]) && isset($_GET["kwdikos"]) && isset($_GET["hmeromhnia"]))
-      	// Εκτέλεσε τη συνάρτηση average()
-        $value = average($_GET["rypos"],$_GET["kwdikos"],$_GET["hmeromhnia"]);
-      else
-        $value = "Missing argument";
+
+  $con=mysqli_connect("127.0.0.1","root","","web_api");
+
+  if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  }
+  $result = mysqli_query($con,"SELECT requests FROM users WHERE api_key='".$_GET['key']."'");
+
+  $row = mysqli_fetch_array($result);
+  $requests = $row['requests'];
+
+  if (mysqli_num_rows($result) > 0){
+
+    // Ανάλογα με το action που λάβαμε μετακινούμαστε και στο κατάλληλο case
+    switch ($_GET["action"])
+    {
+      case "stations":
+        $req = "stations";
+        mysqli_query($con,"INSERT INTO `requests`(`api_key`, `request`, `category`) VALUES ('".$_GET['key']."','".$req."', 'stations')");
+        $requests = $requests + 1;
+        mysqli_query($con,"UPDATE users SET requests='".$requests."' WHERE api_key='".$_GET['key']."'");
+        // Εκτέλεσε τη συνάρτηση stations()
+        $value = stations();
         break;
-    case "abs_rypos":
-      if (isset($_GET["rypos"]) && isset($_GET["kwdikos"]) && isset($_GET["hmeromhnia"]) && isset($_GET["wra"]))
-      	// Εκτέλεσε τη συνάρτηση abs_rypos()
-        $value = abs_rypos($_GET["rypos"],$_GET["kwdikos"],$_GET["hmeromhnia"],$_GET["wra"]);
-      else
-        $value = "Missing argument";
-        break;
-   }
+      case "average":
+        // Ελέγχουμε αν έχουν δοθεί τα κατάλληλα ορίσματα αλλιώς επιστρέφουμε μήνυμα λάθους
+        if (isset($_GET["rypos"]) && isset($_GET["kwdikos"]) && isset($_GET["hmeromhnia"])){
+          $req = "average rypos=".$_GET['rypos']." stathmos=".$_GET['kwdikos']." hmeromhnia=".$_GET['hmeromhnia'];
+          mysqli_query($con,"INSERT INTO requests (request, api_key, category) VALUES ('".$req."', '".$_GET['key']."', 'average')");
+          $requests = $requests + 1;
+          mysqli_query($con,"UPDATE users SET requests='".$requests."' WHERE api_key='".$_GET['key']."'");
+        	// Εκτέλεσε τη συνάρτηση average()
+          $value = average($_GET["rypos"],$_GET["kwdikos"],$_GET["hmeromhnia"]);
+        }else
+          $value = "Missing argument";
+          break;
+      case "abs_rypos":
+        if (isset($_GET["rypos"]) && isset($_GET["kwdikos"]) && isset($_GET["hmeromhnia"]) && isset($_GET["wra"])){
+          $req = "abs_rypos rypos=".$_GET['rypos']." stathmos=".$_GET['kwdikos']." hmeromhnia=".$_GET['hmeromhnia']." wra=".$_GET['wra'];
+          mysqli_query($con,"INSERT INTO requests (request, api_key, category) VALUES ('".$req."', '".$_GET['key']."', 'abs_rypos')");
+          $requests = $requests + 1;
+          mysqli_query($con,"UPDATE users SET requests='".$requests."' WHERE api_key='".$_GET['key']."'");
+        	// Εκτέλεσε τη συνάρτηση abs_rypos()
+          $value = abs_rypos($_GET["rypos"],$_GET["kwdikos"],$_GET["hmeromhnia"],$_GET["wra"]);
+        }else
+          $value = "Missing argument";
+          break;
+     }
+
+  mysqli_close($con);
+ }
 }
 
 // Κωδικοποιούμε την απάντησή μας σε μορφή json και την επιστρέφουμε για να μπορεί 

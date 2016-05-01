@@ -12,7 +12,57 @@ if (isset($_GET['id'])) {
     mysqli_query($con,"DELETE FROM stathmoi WHERE id = ".$_GET['id']);
     header("Location: stathmoi.php");
 }
+?>
 
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false"></script>
+<script>
+
+ var map;
+ var myCenter=new google.maps.LatLng(38.246437777492105,22.736161867736882);
+ function initialize() {
+
+    var mapProp = {
+      center: myCenter,
+      zoom:6,
+      mapTypeId:google.maps.MapTypeId.ROADMAP
+      };
+
+    map = new google.maps.Map(document.getElementById('googleMap'),mapProp);
+    
+    <?php 
+    $result = mysqli_query($con,"SELECT * FROM stathmoi ORDER BY onoma ASC"); 
+
+    while($row = mysqli_fetch_array($result)) {
+      echo "placeMarker(".$row['latitude'].", ".$row['longtitude'].");";
+    }
+    ?>
+ }
+
+ function placeMarker(lat, lng) {
+   var pos=new google.maps.LatLng(lat,lng);
+
+   var marker = new google.maps.Marker({
+      position: pos,
+      draggable: true,
+      map: map,
+      title: 'You are here.'
+    });
+
+
+    google.maps.event.addListener(marker, 'dragend', function() {
+        map.setCenter(marker.getPosition());
+        var a = marker.getPosition().lat();
+        var b = marker.getPosition().lng();
+        document.getElementById("latitude").value = a;
+        document.getElementById("longtitude").value = b;
+    });
+ }
+
+ google.maps.event.addDomListener(window, 'load', initialize);
+
+ </script>
+
+<?php
 $result = mysqli_query($con,"SELECT * FROM stathmoi ORDER BY onoma ASC");
 echo "<div>";
 echo "<br><br><br><br><br>";
@@ -50,6 +100,8 @@ echo "</div>";
 mysqli_close($con);
 ?>
 
-<a href="add_station.php"><button class="add">+</button></a>
+ <br><br>
+ <div class="googleMap" id="googleMap"></div>
+ <a href="add_station.php"><button class="add">+</button></a>
 
 <?php include("footer.php"); ?>
