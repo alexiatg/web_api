@@ -11,24 +11,22 @@ function generateRandomString() {
 }
 
 
-	if (isset($_GET['change']) && isset($_GET['email'])) {
-		if ($_GET['change'] == "y") {
-			$key = generateRandomString();
-			// Δημιουργούμε μία σύνδεση στη Βάση
-			$con=mysqli_connect("127.0.0.1","root","","web_api");
+	if (isset($_GET['email'])) {
+		$key = generateRandomString();
+		// Δημιουργούμε μία σύνδεση στη Βάση
+		$con=mysqli_connect("127.0.0.1","root","","web_api");
 
-			// Ελέγχουμε αν η σύνδεση έγινε επιτυχώς αλλιώς βγάζουμε
-			// μήνυμα λάθους
-			if (mysqli_connect_errno()) {
-				echo "Failed to connect to MySQL: " . mysqli_connect_error();
-			}
-
-			mysqli_query($con,"UPDATE users SET api_key='".$key."' WHERE email='".$_GET['email']."'");
-
-			// Κλείνουμε τη σύνδεση με τη Βάση
-			mysqli_close($con);
-
-			header("Location: login.php");
+		// Ελέγχουμε αν η σύνδεση έγινε επιτυχώς αλλιώς βγάζουμε
+		// μήνυμα λάθους
+		if (mysqli_connect_errno()) {
+			echo "Failed to connect to MySQL: " . mysqli_connect_error();
 		}
+
+		mysqli_query($con,"UPDATE users SET api_key='".$key."' WHERE email='".$_GET['email']."'");
+
+		// Κλείνουμε τη σύνδεση με τη Βάση
+		mysqli_close($con);
+
+		header("Location: login.php");
 	}
 ?>

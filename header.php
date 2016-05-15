@@ -12,6 +12,7 @@ session_start();
 
 <ul>
   <?php
+	$actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
   if(isset($_SESSION["logged"])){
 	  if ($_SESSION["logged"] == true) {
 	  	?>
@@ -20,12 +21,12 @@ session_start();
 		<li><a href="requests.php">Requests</a></li>
 	  	<li><a href="logout.php">Έξοδος</a></li>
 	  	<?php
-	  }elseif (isset($_GET['red'])) {
+	  }elseif ($actual_link == "http://localhost/web_api/login.php") {
 	  	?>
 	  	<li><a href="register.php">Εγγραφή</a></li>
 	  	<?php
 	  } else{
-		header("Location: login.php?red=true");
+		header("Location: login.php");
 	  }
 	}else{
 		header("Location: logout.php");

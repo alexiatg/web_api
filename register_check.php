@@ -23,6 +23,6 @@ $pwd = $_POST['password'];
 		mysqli_query($con,"INSERT INTO users (email, password) VALUES ('".$email."', '".$pwd."')");
 		// Κλείνουμε τη σύνδεση με τη Βάση
 		mysqli_close($con);
-		header("Location: obtain_key.php?change=y&email=".$email);
+		header("Location: obtain_key.php?email=".$email);
 	}
 ?>

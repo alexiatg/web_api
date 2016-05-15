@@ -1,12 +1,13 @@
-<?php include("header.php"); ?>
-
-<div id="ajax-request">
 <?php
+session_start();
+
 $con=mysqli_connect("127.0.0.1","root","","web_api");
 
 if (mysqli_connect_errno()) {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
+
+$ajax_response='';
 
 if ($_SESSION['role'] == "user") {
     $result = mysqli_query($con,"SELECT api_key FROM users WHERE email='".$_SESSION['email']."'");
@@ -22,29 +23,7 @@ if ($_SESSION['role'] == "user") {
     $row = mysqli_fetch_array($result);
     $abs_rypos = $row['abs'];
 
-
-    echo "<div>";
-    echo "<br><br><br>";
-    echo "<table class='info'>";
-    echo "<tr><td>";
-    echo "Σταθμοί";
-    echo "</td><td>";
-    echo "Μέση τιμή";
-    echo "</td><td>";
-    echo "Απόλυτη τιμή";
-    echo "</td>";
-
-    echo "<tr>";
-    echo "<td>";
-    echo $stations;
-    echo "</td><td>";
-    echo $average;
-    echo "</td><td>";
-    echo $abs_rypos;
-    echo "</td></tr>";
-
-    echo "</table>";
-    echo "</div>";
+    $ajax_response = $ajax_response."<div><br><br><br><table class='info'><tr><td>Σταθμοί</td><td>Μέση τιμή</td><td>Απόλυτη τιμή</td></tr><tr><td>".$stations."</td><td>".$average."</td><td>".$abs_rypos."</td></tr></table></div>";
 }else{
     $result = mysqli_query($con,"SELECT COUNT(category) AS stations FROM requests WHERE category='stations'");
     $row = mysqli_fetch_array($result);
@@ -61,45 +40,20 @@ if ($_SESSION['role'] == "user") {
     $result = mysqli_query($con,"SELECT api_key FROM users ORDER BY requests DESC");
     $num = 1;
 
-    echo "<div>";
-    echo "<br><br><br>";
-    echo "<table class='info'>";
-    echo "<tr><td>";
-    echo "Σταθμοί";
-    echo "</td><td>";
-    echo "Μέση τιμή";
-    echo "</td><td>";
-    echo "Απόλυτη τιμή";
-    echo "</td><td>";
-    echo "Top 10";
-    echo "</td><td>";
-    echo "Σύνολο Api keys";
-    echo "</td>";
-
-    echo "<tr>";
-    echo "<td>";
-    echo $stations;
-    echo "</td><td>";
-    echo $average;
-    echo "</td><td>";
-    echo $abs_rypos;
-    echo "</td><td>";
-    while ( $row = mysqli_fetch_array($result) ) {
+    $ajax_response = $ajax_response."<div><br><br><br><table class='info'><tr><td>Σταθμοί</td><td>Μέση τιμή</td><td>Απόλυτη τιμή</td><td>Top 10</td><td>Σύνολο Api keys</td><tr><td>".$stations."</td><td>".$average."</td><td>".$abs_rypos."</td><td>";
+  
+      while ( $row = mysqli_fetch_array($result) ) {
         if ($num > 10) {
             break;
         }
-        echo $num.". ".$row['api_key']."<br>";
+        $ajax_response = $ajax_response.$num.". ".$row['api_key']."<br>";
         $num = $num + 1;
     }
-    echo "</td><td>";
-    echo $apis;
-    echo "</td></tr>";
 
-    echo "</table>";
-    echo "</div>";
+    $ajax_response = $ajax_response."</td><td>".$apis."</td></tr></table></div>";
 }
 
 mysqli_close($con);
+
+echo $ajax_response;
 ?>
-</div>
-<?php include("footer.php"); ?>

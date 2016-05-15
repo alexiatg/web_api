@@ -51,11 +51,7 @@ if (isset($_GET['id'])) {
 
     google.maps.event.addListener(marker, 'dragend', function() {
         map.setCenter(marker.getPosition());
-        var a = marker.getPosition().lat();
-        var b = marker.getPosition().lng();
-        document.getElementById("latitude").value = a;
-        document.getElementById("longtitude").value = b;
-    });
+           });
  }
 
  google.maps.event.addDomListener(window, 'load', initialize);
